@@ -3,12 +3,15 @@
 import csv
 from pathlib import Path
 
+# Use utf-8-sig so CSV saved with BOM still has correct column names (e.g. domain_url)
+CSV_ENCODING = "utf-8-sig"
+
 
 def load_meta(data_dir: Path) -> dict:
     path = data_dir / "report_meta.csv"
     if not path.exists():
         raise FileNotFoundError(f"Missing {path}")
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, newline="", encoding=CSV_ENCODING) as f:
         rows = list(csv.DictReader(f))
     if not rows:
         raise ValueError("report_meta.csv is empty")
@@ -30,17 +33,47 @@ def load_meta(data_dir: Path) -> dict:
     }
 
 
+# Map common CSV header variants to canonical keys expected by the template
+_CANONICAL_KEYS = {
+    "domain_url": ["domain_url", "domain", "Domain", "Domain / URL", "Domain/URL"],
+    "reported_on": ["reported_on", "reported on", "Reported On"],
+    "last_updated": ["last_updated", "last updated", "Last Updated"],
+    "threat_category": ["threat_category", "threat category", "Threat Category"],
+    "remarks": ["remarks", "Remarks"],
+}
+
+
+def _normalize_row(row: dict, canonical_for_table: list) -> dict:
+    """Produce a row with only canonical keys so template always has e.g. row.domain_url."""
+    out = {}
+    for canon in canonical_for_table:
+        aliases = _CANONICAL_KEYS.get(canon, [canon])
+        value = ""
+        for key in row:
+            key_stripped = key.strip("\ufeff")  # BOM on first column
+            if key_stripped in aliases or key_stripped == canon:
+                value = (row.get(key) or "").strip()
+                break
+        out[canon] = value
+    return out
+
+
 def load_table(data_dir: Path, filename: str, required_columns: list) -> list[dict]:
     path = data_dir / filename
     if not path.exists():
         return []
-    with open(path, newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
+    with open(path, newline="", encoding=CSV_ENCODING) as f:
+        reader = csv.DictReader(f)
+        # Normalize header: strip BOM from first column name
+        if reader.fieldnames:
+            reader.fieldnames = [n.strip("\ufeff") for n in reader.fieldnames]
+        rows = list(reader)
     out = []
     for r in rows:
         row = {k: (v or "").strip() for k, v in r.items()}
-        if any(row.get(c) for c in required_columns):
-            out.append(row)
+        normalized = _normalize_row(row, required_columns)
+        if any(normalized.get(c) for c in required_columns):
+            out.append(normalized)
     return out
 
 

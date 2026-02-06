@@ -123,7 +123,7 @@ make report       # HTML only → output/
 make report-pdf   # HTML + PDF → output/
 make open        # report-pdf + open PDF
 make auto        # Set report_date to today, then HTML + PDF
-make upload      # Start Flask upload app (http://127.0.0.1:5000)
+make upload      # Start Flask upload app (http://0.0.0.0:5000, reachable from LAN)
 make clean       # Remove generated files in output/
 ```
 
@@ -148,7 +148,7 @@ PYTHONPATH=src .venv/bin/python -m scripts.app_upload
 # or: make upload
 ```
 
-Then open **http://127.0.0.1:5000**, upload the four CSVs, optionally check “Also generate PDF”, and download the report.
+The app binds to **0.0.0.0:5000**, so it is reachable from other machines on your network. Open **http://127.0.0.1:5000** on this machine, or **http://\<this-machine-ip\>:5000** from another device. Upload the four CSVs, optionally check “Also generate PDF”, and download the report.
 
 ---
 

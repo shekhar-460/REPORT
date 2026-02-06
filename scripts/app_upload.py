@@ -3,7 +3,7 @@
 Web app: upload CSV files to generate the IRCTC Takedown Report (HTML and optional PDF).
 
 Run from project root: python -m scripts.app_upload
-Open: http://127.0.0.1:5000
+Open: http://127.0.0.1:5000 or http://<your-ip>:5000 (hosted on 0.0.0.0)
 """
 
 import sys
@@ -185,4 +185,4 @@ def download_pdf():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

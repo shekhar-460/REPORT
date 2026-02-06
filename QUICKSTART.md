@@ -75,7 +75,7 @@ export PYTHONPATH=src
 python -m scripts.app_upload
 ```
 
-Open http://127.0.0.1:5000, upload the four CSVs, generate, and download HTML or PDF.
+The app hosts on **0.0.0.0:5000** (reachable from your LAN). Open **http://127.0.0.1:5000** on this machine, or **http://\<this-machine-ip\>:5000** from another device. Upload the four CSVs, generate, and download HTML or PDF.
 
 ---
 
