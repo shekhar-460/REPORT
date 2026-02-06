@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRCTC – Daily Cyber Threat Suppression & Takedown Status Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-alt: #eef1f5;
+      --text: #1f2328;
+      --text-muted: #57606a;
+      --accent: #cf222e;
+      --accent-soft: rgba(207, 34, 46, 0.12);
+      --success: #1a7f37;
+      --success-soft: rgba(26, 127, 55, 0.12);
+      --warning: #9a6700;
+      --warning-soft: rgba(154, 103, 0, 0.12);
+      --border: #d0d7de;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .logo-banner {
+      width: 100%;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      text-align: center;
+    }
+
+    .logo-banner-bottom {
+      border-bottom: none;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .logo-banner img {
+      display: inline-block;
+      max-height: 52px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Header */
+    .report-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .report-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .report-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .report-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .report-meta strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 0.75rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text-muted);
+    }
+
+    p {
+      margin: 0 0 0.75rem;
+      color: var(--text-muted);
+    }
+
+    ul {
+      margin: 0 0 1rem;
+      padding-left: 1.25rem;
+      color: var(--text-muted);
+    }
+
+    ul li {
+      margin-bottom: 0.35rem;
+    }
+
+    /* Status cards */
+    .status-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .status-card.taken-down {
+      border-color: var(--success);
+      background: var(--success-soft);
+    }
+
+    .status-card.under-review {
+      border-color: var(--warning);
+      background: var(--warning-soft);
+    }
+
+    .status-card.in-progress {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .status-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+    }
+
+    .status-card .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Key outcomes */
+    .key-outcomes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .key-outcomes ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .key-outcomes li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .key-outcomes li:last-child {
+      margin-bottom: 0;
+    }
+
+    .key-outcomes .check {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.65rem 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    td:first-child {
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .domain-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-phishing {
+      background: var(--accent-soft);
+      color: #b62324;
+    }
+
+    .badge-typosquat {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .badge-fake-app {
+      background: rgba(102, 84, 187, 0.15);
+      color: #5e5098;
+    }
+
+    /* Metrics snapshot */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-weight: 600;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Risk posture table */
+    .risk-table {
+      margin: 1rem 0;
+    }
+
+    .risk-table .metric-row .metric-value.low {
+      color: var(--success);
+    }
+
+    /* Closing / assurance */
+    .assurance-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .assurance-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-break {
+      break-before: page;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+      .container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-banner">
+    <img src="main_logo.png" alt="Logo">
+  </div>
+  <div class="container">
+    <header class="report-header">
+      <h1 class="report-title">IRCTC – Daily Cyber Threat Suppression & Takedown Status Report</h1>
+      <div class="report-meta">
+        <span><strong>Prepared by:</strong> {{ meta.prepared_by }}</span>
+        <span><strong>Report date:</strong> {{ meta.report_date }}</span>
+        <span><strong>Reporting window:</strong> {{ meta.reporting_window }}</span>
+      </div>
+    </header>
+
+    <!-- 1. Executive Summary -->
+    <section>
+      <h2>1. Executive Summary</h2>
+      <p>
+        Sveltetech continues to actively monitor, disrupt, and suppress malicious digital assets
+        impersonating IRCTC and its associated services.         As of {{ meta.report_date }}, a total of <strong>{{ counts.taken_down }}</strong>
+        malicious domains, websites, and applications have been successfully taken down,
+        eliminating active phishing and fraud risks against IRCTC passengers and stakeholders.
+        An additional <strong>{{ counts.under_review + counts.in_progress }}</strong> threats are under active management, comprising <strong>{{ counts.under_review }}</strong> assets under review
+        and <strong>{{ counts.in_progress }}</strong> assets in active takedown execution.
+      </p>
+      <p>
+        The under-review assets are currently not hosting active malicious content and may display
+        parking pages, lander pages, or resale listings while registrar and platform assessments are
+        ongoing. The in-progress assets have had formal takedown requests initiated and are currently under
+        evaluation by the respective registrars, hosting providers, cloud platforms, or application
+        marketplaces. All such assets are under continuous monitoring through periodic validation checks,
+        reappearance detection, and content status verification.
+      </p>
+      <div class="status-cards">
+        <div class="status-card taken-down">
+          <div class="value">{{ counts.taken_down }}</div>
+          <div class="label">Taken Down</div>
+        </div>
+        <div class="status-card under-review">
+          <div class="value">{{ counts.under_review }}</div>
+          <div class="label">Under Review</div>
+        </div>
+        <div class="status-card in-progress">
+          <div class="value">{{ counts.in_progress }}</div>
+          <div class="label">In Progress</div>
+        </div>
+      </div>
+      <div class="key-outcomes">
+        <ul>
+          {% for item in key_outcomes %}
+          <li><span class="check">✔</span> {{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. Key Metrics Snapshot -->
+    <section>
+      <h2>2. Key Metrics Snapshot (Daily Dashboard)</h2>
+      <div class="metrics-grid">
+        <div class="metric-row">
+          <span class="metric-label">Total Threats Identified (Cumulative)</span>
+          <span class="metric-value">{{ counts.total_threats }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Successfully Taken Down</span>
+          <span class="metric-value">{{ counts.taken_down }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Under Review</span>
+          <span class="metric-value">{{ counts.under_review }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">In Progress</span>
+          <span class="metric-value">{{ counts.in_progress }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Threat Severity</span>
+          <span class="metric-value">{{ meta.threat_severity }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Dominant Threat Type</span>
+          <span class="metric-value">{{ meta.dominant_threat_type }}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Current Risk Exposure</span>
+          <span class="metric-value">{{ meta.risk_exposure }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Takedown Achievements -->
+    <section>
+      <h2>3. Takedown Achievements – Closed & Verified</h2>
+      <h3>3.1 Newly Completed Takedown (Last 24 Hours)</h3>
+      <p><strong>Domain:</strong> {{ meta.newly_completed_domain }} — This domain was actively impersonating IRCTC branding and has been fully removed and verified.</p>
+
+      <h3>3.2 Cumulative Takedown Summary</h3>
+      <ul>
+        <li><strong>Total Assets Neutralized:</strong> {{ counts.taken_down }}</li>
+        <li><strong>Threat categories:</strong> Phishing Websites, Typosquatted Domains, Fake Mobile Applications</li>
+        <li><strong>Impact:</strong> Prevented credential harvesting, financial fraud attempts, and passenger data misuse</li>
+        <li><strong>Verification:</strong> All takedowns independently validated and closed. Current residual exposure from closed cases: Nil</li>
+      </ul>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Domain / URL</th>
+              <th>Reported On</th>
+              <th>Last Updated</th>
+              <th>Threat Category</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in taken_down_rows %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td class="domain-cell">{{ row.domain_url }}</td>
+              <td>{{ row.reported_on }}</td>
+              <td>{{ row.last_updated }}</td>
+              <td><span class="badge {% if row.threat_category == 'Typosquatted Domain' %}badge-typosquat{% elif row.threat_category == 'Fake Mobile App' %}badge-fake-app{% else %}badge-phishing{% endif %}">{{ row.threat_category }}</span></td>
+              <td>{{ row.remarks }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p><em>All completed takedown requests have been verified and formally closed. No further action is required unless reappearance or reposting is observed.</em></p>
+    </section>
+
+    <!-- 4. Threat Landscape Analysis -->
+    <section>
+      <h2>4. Threat Landscape Analysis (Strategic Insight)</h2>
+      <h3>4.1 Attack Patterns Observed</h3>
+      <ul>
+        <li>Extensive typosquatting on IRCTC brand keywords (irctc, tatkal, rail, e-catering, tejas)</li>
+        <li>Abuse of modern hosting platforms (Pages.dev, Vercel, cloud CDNs)</li>
+        <li>Phishing infrastructure designed to: harvest login credentials; mimic Tatkal booking flows; redirect to fraudulent payment pages</li>
+        <li>Use of temporary landing pages to evade early detection</li>
+      </ul>
+    </section>
+
+    <!-- 5. Assets Under Review -->
+    <section>
+      <h2>5. Assets Under Review (Risk Controlled)</h2>
+      <h3>5.1 Newly Under Review (Last 24 Hours)</h3>
+      <p><strong>Domain:</strong> {{ meta.newly_under_review_domain }}</p>
+      <h3>5.2 Under Review – Current Status</h3>
+      <p><strong>Total:</strong> {{ counts.under_review }} domains / URLs. <strong>Observed behaviour:</strong> Domains parked; no active phishing pages; listed for resale or inactive. <strong>Risk level:</strong> Controlled. These assets are being actively tracked to ensure no re-activation occurs during registrar or platform review.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Domain / URL</th>
+              <th>Reported On</th>
+              <th>Threat Category</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in under_review_rows %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td class="domain-cell">{{ row.domain_url }}</td>
+              <td>{{ row.reported_on }}</td>
+              <td><span class="badge {% if row.threat_category == 'Typosquatted Domain' %}badge-typosquat{% elif row.threat_category == 'Fake Mobile App' %}badge-fake-app{% else %}badge-phishing{% endif %}">{{ row.threat_category }}</span></td>
+              <td>{{ row.remarks }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p><em>Escalation emails have been formally raised with the concerned platforms for the under-review cases. Follow-ups are ongoing to expedite resolution.</em></p>
+    </section>
+
+    <!-- 6. Assets In Progress -->
+    <section>
+      <h2>6. Assets In Progress (Active Takedown Execution)</h2>
+      <h3>6.1 Newly Reactivated Domains (Previously Takedown)</h3>
+      <p>{{ reactivated_domains_display }}</p>
+      <h3>6.2 In-Progress Summary</h3>
+      <p><strong>Total:</strong> {{ counts.in_progress }} assets. <strong>Platforms:</strong> Domain Registrars, Hosting Providers, Google Play Store, Cloud Application Hosting Providers. <strong>Threat types:</strong> Phishing websites, Typosquatted domains, Fake mobile applications. All cases are within standard takedown SLA timelines and under continuous follow-up.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Domain / URL</th>
+              <th>Reported On</th>
+              <th>Threat Category</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in in_progress_rows %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td class="domain-cell">{{ row.domain_url }}</td>
+              <td>{{ row.reported_on }}</td>
+              <td><span class="badge {% if row.threat_category == 'Typosquatted Domain' %}badge-typosquat{% elif row.threat_category == 'Fake Mobile App' %}badge-fake-app{% else %}badge-phishing{% endif %}">{{ row.threat_category }}</span></td>
+              <td>{{ row.remarks }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p><em>These requests are currently in progress and are within standard platform review timelines.</em></p>
+    </section>
+
+    <!-- 7. Risk Posture -->
+    <section>
+      <h2>7. Risk Posture & Assurance Statement</h2>
+      <div class="risk-table metrics-grid">
+        <div class="metric-row">
+          <span class="metric-label">Passenger Credential Risk</span>
+          <span class="metric-value low">Mitigated</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Brand Abuse</span>
+          <span class="metric-value">Actively Suppressed</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Financial Fraud Risk</span>
+          <span class="metric-value">Contained</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Re-appearance Monitoring</span>
+          <span class="metric-value">Ongoing</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Public-Facing Exposure</span>
+          <span class="metric-value low">None Observed</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overall Cyber Risk Rating (Brand Abuse)</span>
+          <span class="metric-value low">LOW – CONTROLLED</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Actions Taken -->
+    <section>
+      <h2>8. Actions Taken by Sveltetech</h2>
+      <ul>
+        <li>Continuous brand & domain monitoring</li>
+        <li>Rapid phishing verification & evidence collection</li>
+        <li>Registrar and platform escalations</li>
+        <li>Legal & abuse-desk coordination</li>
+        <li>Post-takedown verification</li>
+        <li>Continuous re-appearance tracking</li>
+      </ul>
+    </section>
+
+    <!-- 9. Forward Actions -->
+    <section>
+      <h2>9. Forward Actions (Next 24–72 Hours)</h2>
+      <ul>
+        <li>Close remaining under-review cases</li>
+        <li>Accelerate cloud-platform takedowns</li>
+        <li>Monitor for re-registration / domain recycling</li>
+        <li>Identify emerging keyword attack clusters</li>
+        <li>Continue daily executive reporting to IRCTC</li>
+      </ul>
+    </section>
+
+    <!-- 10. Closing Note -->
+    <section>
+      <h2>10. Closing Note</h2>
+      <div class="assurance-box">
+        <p>{{ meta.closing_note }}</p>
+      </div>
+    </section>
+
+    <footer style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted);">
+      IRCTC – Daily Cyber Threat Suppression & Takedown Status Report · Prepared by {{ meta.prepared_by }} · Report Date: {{ meta.report_date }}
+    </footer>
+  </div>
+  <div class="logo-banner logo-banner-bottom">
+    <img src="main_logo.png" alt="Logo">
+  </div>
+</body>
+</html>

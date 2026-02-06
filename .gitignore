@@ -1,0 +1,12 @@
+# Generated report artifacts (keep output/ via .gitkeep)
+output/*
+!output/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Optional
+report_cron.log
