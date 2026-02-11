@@ -367,7 +367,7 @@
       <h2>1. Executive Summary</h2>
       <p>
         Sveltetech continues to actively monitor, disrupt, and suppress malicious digital assets
-        impersonating IRCTC and its associated services.         As of {{ meta.report_date }}, a total of <strong>{{ counts.taken_down }}</strong>
+        impersonating IRCTC and its associated services. As of {{ meta.report_date }}, a total of <strong>{{ counts.taken_down }}</strong>
         malicious domains, websites, and applications have been successfully taken down,
         eliminating active phishing and fraud risks against IRCTC passengers and stakeholders.
         An additional <strong>{{ counts.under_review + counts.in_progress }}</strong> threats are under active management, comprising <strong>{{ counts.under_review }}</strong> assets under review
@@ -443,8 +443,9 @@
     <section>
       <h2>3. Takedown Achievements – Closed & Verified</h2>
       <h3>3.1 Newly Completed Takedown (Last 24 Hours)</h3>
-      <p><strong>Domain:</strong> {{ meta.newly_completed_domain }} — This domain was actively impersonating IRCTC branding and has been fully removed and verified.</p>
-
+     
+      <p><strong>Domain:</strong> {{ meta.newly_completed_domain }} — {{ meta.newly_completed_domain_description }}</p>
+     
       <h3>3.2 Cumulative Takedown Summary</h3>
       <ul>
         <li><strong>Total Assets Neutralized:</strong> {{ counts.taken_down }}</li>

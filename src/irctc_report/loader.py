@@ -18,11 +18,16 @@ def load_meta(data_dir: Path) -> dict:
     row = rows[0]
     reactivated = (row.get("reactivated_domains") or "").strip()
     reactivated_list = [x.strip() for x in reactivated.split(";") if x.strip()]
+    newly_completed_desc = (
+        (row.get("newly_completed_domain_description") or "").strip()
+        or "Successfully taken down and verified."
+    )
     return {
         "report_date": (row.get("report_date") or "").strip(),
         "prepared_by": (row.get("prepared_by") or "").strip(),
         "reporting_window": (row.get("reporting_window") or "").strip(),
         "newly_completed_domain": (row.get("newly_completed_domain") or "").strip(),
+        "newly_completed_domain_description": newly_completed_desc,
         "newly_under_review_domain": (row.get("newly_under_review_domain") or "").strip(),
         "reactivated_domains": reactivated_list,
         "threat_severity": (row.get("threat_severity") or "Predominantly High / Critical").strip(),
